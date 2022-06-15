@@ -40,13 +40,17 @@ describe("Vault PDK", function()
       plugins = "bundled",
     }))
 
+    local env = require "kong.vaults.env"
     local kong_global = require "kong.global"
     _G.kong = kong_global.new()
     kong_global.init_pdk(kong, conf)
 
     is_reference = _G.kong.vault.is_reference
     parse_reference = _G.kong.vault.parse_reference
-    dereference = _G.kong.vault.get
+    dereference = function(...)
+      env.init()
+      return _G.kong.vault.get(...)
+    end
 
     vaults = {}
 
